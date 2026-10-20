@@ -81,9 +81,14 @@ needed, then asks for a kernel restart. It selects CPU or CUDA 12.4 wheels based
 on GPU visibility. Override `SKLEARNLM_SONAR_VARIANT` with `cpu` or `cu124`
 before that cell to choose explicitly.
 
-For a prepared CPU environment, the same setup can be performed in a terminal:
+Fairseq2 also requires the system library libsndfile. On Ubuntu, install
+`libsndfile1` first; the notebook does this automatically in a root Colab
+runtime if it is absent.
+
+For a prepared Ubuntu CPU environment, the same setup can be performed in a terminal:
 
 ~~~bash
+sudo apt-get install libsndfile1
 python -m pip install torch==2.6.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cpu
 python -m pip install fairseq2==0.5.2 fairseq2n==0.5.2+cpu --extra-index-url https://fair.pkg.atmeta.com/fairseq2/whl/pt2.6.0/cpu
 python -m pip install -r notebooks/requirements-sonar.txt
