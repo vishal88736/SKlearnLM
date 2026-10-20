@@ -43,3 +43,14 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
+
+## Training notebook reference
+
+The training notebook was written after inspecting the user-supplied notebook at
+https://drive.google.com/file/d/1qyydJT5PC0eK4B0pXlbJ3N1f3gPKA6i6/view.
+Its conceptual organization includes tokenization, causal attention, GPT blocks,
+loss, training and generation. The supplied reference links to Sebastian Raschka's
+https://github.com/rasbt/LLMs-from-scratch project. Reference provenance is recorded
+in notebooks/reference_provenance.json. The original reference notebook and its
+book-style explanations are not redistributed; the adaptation uses newly written
+code and explanations for this corpus.

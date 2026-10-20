@@ -6,6 +6,12 @@ A document-based scikit-learn documentation corpus for small transformer
 training experiments. The text includes API references, explanations, Python
 examples and LaTeX equations from the English `1.10.dev0` documentation.
 
+## Training notebook
+
+Open [the Jupyter notebook](notebooks/SKlearnLM_Transformer.ipynb) or [run it in Colab](https://colab.research.google.com/github/vishal88736/SKlearnLM/blob/main/notebooks/SKlearnLM_Transformer.ipynb).
+
+The 30-cell notebook adapts the supplied reference's from-scratch GPT path to this corpus: train-only BPE, a small causal transformer, validation, checkpoints, generation and export. Full training is disabled until explicitly enabled in its configuration cell. See [notebooks/README.md](notebooks/README.md) for usage and the CPU smoke-test scope.
+
 ## Training files
 
 | File | Purpose |

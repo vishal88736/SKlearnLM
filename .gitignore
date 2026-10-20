@@ -15,3 +15,10 @@ __pycache__/
 *.pt
 *.pth
 *.safetensors
+
+# User-supplied reference material stays local.
+/references/
+
+.ipynb_checkpoints/
+
+sklearnlm_data/
