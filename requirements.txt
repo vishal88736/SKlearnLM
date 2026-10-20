@@ -1,0 +1,22 @@
+# Both notebooks: Python 3.12, Linux x86-64, NVIDIA CUDA 12.4.
+# Install manually from the project root when ready:
+# uv pip install --cache-dir .venv/cache/uv --python .venv/bin/python -r requirements.txt
+# Packages go into .venv; downloads stay in .venv/cache/uv.
+# SONAR model weights are downloaded only when its model-loading cells run.
+--extra-index-url https://fair.pkg.atmeta.com/fairseq2/whl/pt2.6.0/cu124
+
+torch @ https://files.pythonhosted.org/packages/e5/35/0c52d708144c2deb595cd22819a609f78fdd699b95ff6f0ebcd456e3c7c1/torch-2.6.0-cp312-cp312-manylinux1_x86_64.whl#sha256=2bb8987f3bb1ef2675897034402373ddfc8f5ef0e156e2d8cfc47cacafdda4a9
+torchaudio @ https://files.pythonhosted.org/packages/ed/aa/9082e715a673dd8e22b6a60cec7f301e897406023672b2090f8bcd8a5959/torchaudio-2.6.0-cp312-cp312-manylinux1_x86_64.whl#sha256=715aa21f6bdbd085454c313ae3a2c7cc07bf2e8cf05752f819afb5b4c57f4e6f
+
+# Pretrained sentence representations for notebook 02.
+fairseq2==0.5.2
+fairseq2n==0.5.2+cu124
+sonar-space==0.5.0
+
+# Tokenization, plots, text comparison and Jupyter.
+tokenizers>=0.21,<1
+matplotlib>=3.8,<4
+rouge-score>=0.1.2,<1
+jupyterlab>=4.3,<5
+ipykernel>=6.29,<8
+nbformat>=5.10,<6
