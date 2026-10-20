@@ -373,7 +373,7 @@ def load_jsonl(path):
 
 
 def encode_documents(documents):
-    return "".join(row["text"] + "\n" + EOS + "\n\n" for row in documents)
+    return "\n\n".join(row["text"] + "\n" + EOS for row in documents) + "\n"
 
 
 def build_outputs(documents, source_metadata, seed=42):

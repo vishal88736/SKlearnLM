@@ -1,0 +1,349 @@
+{
+  "document_boundary_token": "<|endoftext|>",
+  "documentation_version": "1.10.dev0",
+  "files": {
+    "corpus.txt": {
+      "bytes": 7964293,
+      "sha256": "bab24d9993c8de9b49b41f7e7e4e2b259bf1b21483ed3292e7378d1c285f19d3"
+    },
+    "documents.jsonl": {
+      "bytes": 8713733,
+      "sha256": "aa414106f1b284fad73560e13e524e9c260cd3854d3731fd4f9b1e81afd81fed"
+    },
+    "test.txt": {
+      "bytes": 400896,
+      "sha256": "72774cf872e758f32102536252043f5ccb2c0bca824c9703520f69b0fef10bc7"
+    },
+    "train.txt": {
+      "bytes": 7164437,
+      "sha256": "cf79a37d0686b21cf86729e024211599134b7b0ab24450156ad947d81ebbb73c"
+    },
+    "validation.txt": {
+      "bytes": 398958,
+      "sha256": "9c1277680b8028663a47df58bbe77bb3782014449ccb729eded7410ad3f08e02"
+    }
+  },
+  "license": "BSD-3-Clause",
+  "schema_version": 1,
+  "seed": 42,
+  "source_base_url": "https://scikit-learn.org/dev/",
+  "source_metadata": {
+    "exported_pages": 1075,
+    "indexed_pages": 1076,
+    "internal_definition_pages_omitted": [
+      "whats_new/_contributors.html"
+    ],
+    "skipped_html_files": [
+      {
+        "reason": "no_document_text",
+        "source_path": "_static/webpack-macros.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/applications/wikipedia_principal_eigenvector.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/cluster/plot_agglomerative_clustering.html.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/cluster/plot_cluster_iris.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/cluster/plot_color_quantization.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/datasets/plot_digits_last_image.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/datasets/plot_iris_dataset.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/datasets/plot_random_dataset.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/decomposition/plot_beta_divergence.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/decomposition/plot_pca_3d.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/ensemble/plot_adaboost_hastie_10_2.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/ensemble/plot_forest_importances_faces.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/ensemble/plot_voting_probas.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/exercises/plot_cv_digits.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/feature_selection/plot_permutation_test_for_classification.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/linear_model/plot_bayesian_ridge.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/linear_model/plot_iris_logistic.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/linear_model/plot_lasso_coordinate_descent_path.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/linear_model/plot_lasso_lars.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/linear_model/plot_logistic.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/linear_model/plot_ols.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/linear_model/plot_ols_3d.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/linear_model/plot_ols_ridge_variance.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/linear_model/plot_sgd_comparison.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/miscellaneous/plot_changed_only_pprint_parameter.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/miscellaneous/plot_partial_dependence_visualization_api.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/model_selection/grid_search_text_feature_extraction.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/model_selection/plot_validation_curve.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "auto_examples/svm/plot_svm_nonlinear.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "contents.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "dispatching.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "documentation.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "lite/consoles/index.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "lite/doc/tree/index.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "lite/doc/workspaces/index.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "lite/edit/index.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "lite/index.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "lite/lab/index.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "lite/lab/tree/index.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "lite/lab/workspaces/index.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "lite/notebooks/index.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "lite/repl/index.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "lite/tree/index.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "modules/classes.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "modules/model_persistence.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "preface.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "search.html"
+      },
+      {
+        "reason": "redirect",
+        "source_path": "tutorial/machine_learning_map/index.html"
+      },
+      {
+        "reason": "no_document_text",
+        "source_path": "whats_new/_contributors.html"
+      }
+    ],
+    "source_searchindex_sha256": "533feff6fc2c0ce83ca7301f75e2d348f64c9929bb6302d6629954034cb117ab"
+  },
+  "source_revision_linked_by_api_pages": "4e624cfb1",
+  "special_tokens_to_register": [
+    "<|endoftext|>"
+  ],
+  "split_limitations": "Topic grouping uses filename heuristics. Shared API boilerplate and cross-topic examples may still overlap between splits.",
+  "split_strategy": "whole topic families; approximately 90/5/5 by characters",
+  "split_targets": {
+    "test": 0.05,
+    "train": 0.9,
+    "validation": 0.05
+  },
+  "statistics": {
+    "categories": {
+      "api_index": 42,
+      "api_reference": 584,
+      "developer_documentation": 17,
+      "examples": 316,
+      "project": 24,
+      "release_notes": 25,
+      "user_guide": 67
+    },
+    "code_blocks": 3743,
+    "documents": 1075,
+    "splits": {
+      "test": {
+        "body_characters": 398306,
+        "bytes": 400896,
+        "documents": 49,
+        "groups": [
+          "topic/feature_extraction",
+          "topic/multiclass",
+          "topic/svm"
+        ]
+      },
+      "train": {
+        "body_characters": 7122005,
+        "bytes": 7164437,
+        "documents": 936,
+        "groups": [
+          "project/developer_documentation",
+          "project/project",
+          "project/release_notes",
+          "topic/applications",
+          "topic/array_api",
+          "topic/base",
+          "topic/calibration",
+          "topic/callback",
+          "topic/classification",
+          "topic/cluster",
+          "topic/common_pitfalls",
+          "topic/compose",
+          "topic/computing",
+          "topic/configuration",
+          "topic/covariance",
+          "topic/cross_decomposition",
+          "topic/data_interoperability",
+          "topic/data_transforms",
+          "topic/decomposition",
+          "topic/developing_estimators",
+          "topic/df_output_transform",
+          "topic/discriminant_analysis",
+          "topic/dummy",
+          "topic/ensemble",
+          "topic/examples_overview",
+          "topic/exceptions",
+          "topic/experimental",
+          "topic/feature_selection",
+          "topic/frozen",
+          "topic/getting_started",
+          "topic/impute",
+          "topic/inspection",
+          "topic/isotonic",
+          "topic/kernel_approximation",
+          "topic/kernel_ridge",
+          "topic/linear_model",
+          "topic/machine_learning_map",
+          "topic/manifold",
+          "topic/metadata_routing",
+          "topic/metrics",
+          "topic/miscellaneous",
+          "topic/mixture",
+          "topic/model_persistence",
+          "topic/model_selection",
+          "topic/naive_bayes",
+          "topic/neighbors",
+          "topic/neural_network",
+          "topic/outlier_detection",
+          "topic/pipeline",
+          "topic/preprocessing",
+          "topic/preprocessing_targets",
+          "topic/random_projection",
+          "topic/release_highlights",
+          "topic/semi_supervised",
+          "topic/supervised_learning",
+          "topic/tree",
+          "topic/unsupervised_learning",
+          "topic/utils",
+          "topic/visualizations"
+        ]
+      },
+      "validation": {
+        "body_characters": 396105,
+        "bytes": 398958,
+        "documents": 90,
+        "groups": [
+          "topic/datasets",
+          "topic/gaussian_process",
+          "topic/multioutput"
+        ]
+      }
+    }
+  },
+  "text_format": "Markdown with fenced code, tables and original LaTeX equations"
+}

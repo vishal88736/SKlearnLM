@@ -6,3 +6,5 @@
 *.txt text eol=lf
 # Preserve tabular output in the original extracted documentation.
 scikit_learn_all_text.txt whitespace=-space-before-tab
+# Keep source-code tabs inside generated training text.
+data/*.txt whitespace=-space-before-tab
