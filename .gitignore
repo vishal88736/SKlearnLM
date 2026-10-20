@@ -1,0 +1,17 @@
+/scikit-learn-docs/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+.env.*
+!.env.example
+/checkpoints/
+/runs/
+/wandb/
+/tokenizer/
+/tokens/
+*.pt
+*.pth
+*.safetensors

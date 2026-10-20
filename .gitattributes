@@ -1,0 +1,8 @@
+* text=auto
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.jsonl text eol=lf
+*.txt text eol=lf
+# Preserve tabular output in the original extracted documentation.
+scikit_learn_all_text.txt whitespace=-space-before-tab
