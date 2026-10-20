@@ -12,6 +12,13 @@ Open [the Jupyter notebook](notebooks/SKlearnLM_Transformer.ipynb) or [run it in
 
 The notebook now builds a complete **encoder–decoder Transformer** with simple, explicit PyTorch code: token embeddings, sinusoidal positions, attention masks, encoder blocks, decoder blocks and cross-attention. It includes next-token training, validation, checkpoints and generation. Training runs when its training cell is executed. The sentence-pair mode prepares a matched next-concept comparison; full-text continuation is also available. See [notebooks/README.md](notebooks/README.md) for usage and validation scope.
 
+After completing the first notebook, open [02 — Next-concept prediction](notebooks/02_Next_Concept_Prediction.ipynb)
+or [run it in Colab](https://colab.research.google.com/github/vishal88736/SKlearnLM/blob/main/notebooks/02_Next_Concept_Prediction.ipynb).
+It uses frozen pretrained SONAR embeddings, predicts the next sentence vector, and
+compares both models on identical held-out sentence pairs. It is an LCM-inspired
+MSE experiment with outside pretrained knowledge. The guide explains setup,
+artifacts and what the comparison can establish.
+
 ## Training files
 
 | File | Purpose |

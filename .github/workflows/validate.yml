@@ -1,4 +1,4 @@
-name: Corpus validation
+name: Corpus and notebook validation
 
 on:
   push:
@@ -24,7 +24,9 @@ jobs:
       - name: Formatter preservation tests
         run: python -m unittest discover -s tests -v
       - name: Notebook structure and code syntax
-        run: python scripts/check_training_notebook.py
+        run: |
+          python scripts/check_training_notebook.py
+          python scripts/check_concept_notebook.py
       - name: Dataset hashes, split separation and deterministic rebuild
         run: python scripts/audit_corpus.py
 
@@ -48,4 +50,28 @@ jobs:
       - name: Install notebook runtime and Jupyter test dependencies
         run: python -m pip install -r notebooks/requirements-test.txt
       - name: Execute notebook with two CPU optimizer updates
-        run: python scripts/check_training_notebook.py --smoke
+        run: python scripts/check_training_notebook.py --smoke --output runs/word-smoke
+      - name: Execute concept notebook with labelled deterministic fixtures
+        run: python scripts/check_concept_notebook.py --smoke --word-run runs/word-smoke
+
+  sonar-api:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - name: Install the pinned CPU PyTorch pair
+        run: python -m pip install "torch==2.6.0" "torchaudio==2.6.0" --index-url https://download.pytorch.org/whl/cpu
+      - name: Install the matching Fairseq2 binary
+        run: python -m pip install "fairseq2==0.5.2" "fairseq2n==0.5.2+cpu" --extra-index-url https://fair.pkg.atmeta.com/fairseq2/whl/pt2.6.0/cpu
+      - name: Install SONAR notebook dependencies
+        run: python -m pip install -r notebooks/requirements-sonar.txt
+      - name: Check actual SONAR imports and pipeline signatures without downloading weights
+        run: python scripts/check_sonar_api.py

@@ -54,3 +54,31 @@ https://github.com/rasbt/LLMs-from-scratch project. Reference provenance is reco
 in notebooks/reference_provenance.json. The original reference notebook and its
 book-style explanations are not redistributed; the adaptation uses newly written
 code and explanations for this corpus.
+
+## Transformer and next-concept research
+
+The encoder-decoder architecture follows the concepts in
+Vaswani et al., Attention Is All You Need (2017):
+https://arxiv.org/abs/1706.03762.
+
+The sentence-space MSE experiment is inspired by the LCM team's
+Large Concept Models: Language Modeling in a Sentence Representation Space (2024):
+https://arxiv.org/abs/2412.08821. It is a small encoder-decoder adaptation,
+not the original paper's full architecture or experimental reproduction.
+
+## SONAR pretrained representations
+
+Notebook 02 uses the official SONAR text encoder and decoder by Meta Platforms,
+described by Duquenne, Schwenk and Sagot, SONAR: Sentence-Level Multimodal and
+Language-Agnostic Representations (2023):
+https://arxiv.org/abs/2308.11466.
+
+SONAR source code has its own MIT license. Its text encoder and decoder weights
+are released under CC-BY-NC-4.0, as documented at
+https://github.com/facebookresearch/SONAR/blob/main/LICENSE.md and
+https://github.com/facebookresearch/SONAR/blob/main/NC_MODEL_LICENSE.md.
+
+This repository provides newly written training/comparison code. It does not
+redistribute SONAR weights. Pretrained assets and derived run artifacts are
+downloaded/generated locally and ignored by Git; their licensing is distinct
+from this repository's original code and the scikit-learn documentation corpus.

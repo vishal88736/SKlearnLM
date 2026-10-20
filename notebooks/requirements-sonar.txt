@@ -1,0 +1,7 @@
+# Install the matching PyTorch 2.6.0 / torchaudio and fairseq2n CPU or cu124 wheels first.
+# The notebook setup cell and README show the exact official indexes.
+sonar-space==0.5.0
+fairseq2==0.5.2
+rouge-score>=0.1.2,<1
+tokenizers>=0.21,<1
+matplotlib>=3.8,<4
