@@ -19,6 +19,10 @@ compares both models on identical held-out sentence pairs. It is an LCM-inspired
 MSE experiment with outside pretrained knowledge. The guide explains setup,
 artifacts and what the comparison can establish.
 
+Both notebooks now require a **CUDA GPU** for normal training and use automatic
+mixed precision. [GPU setup and Jupyter commands](notebooks/README.md#train-on-your-nvidia-gpu)
+include the local RTX 4050 configuration and an isolated CUDA environment.
+
 ## Training files
 
 | File | Purpose |

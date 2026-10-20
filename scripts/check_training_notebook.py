@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the encoder-decoder notebook; optionally run its real Jupyter CPU smoke path."""
+"""Validate the encoder-decoder notebook; optionally run its real Jupyter CPU or CUDA smoke path."""
 import argparse
 import ast
 import json
@@ -35,18 +35,18 @@ def check(path):
                       "static_validation": "passed"}
 
 
-def execute(path, folder):
+def execute(path, folder, device="cpu"):
     import nbformat
     from nbclient import NotebookClient
 
     notebook = nbformat.read(path, as_version=4)
     nbformat.validate(notebook)
     keys = ["SKLEARNLM_SMOKE", "SKLEARNLM_NO_INSTALL", "SKLEARNLM_DATA_DIR",
-            "SKLEARNLM_RUN_DIR", "MPLBACKEND", "TOKENIZERS_PARALLELISM"]
+            "SKLEARNLM_RUN_DIR", "SKLEARNLM_SMOKE_DEVICE", "MPLBACKEND", "TOKENIZERS_PARALLELISM"]
     original = {key: os.environ.get(key) for key in keys}
     try:
         os.environ.update(SKLEARNLM_SMOKE="1", SKLEARNLM_NO_INSTALL="1",
-                          SKLEARNLM_DATA_DIR=str(ROOT / "data"), SKLEARNLM_RUN_DIR=str(folder),
+                          SKLEARNLM_DATA_DIR=str(ROOT / "data"), SKLEARNLM_RUN_DIR=str(folder), SKLEARNLM_SMOKE_DEVICE=device,
                           MPLBACKEND="Agg", TOKENIZERS_PARALLELISM="false")
         NotebookClient(notebook, timeout=300, kernel_name="python3",
                        resources={"metadata": {"path": str(ROOT)}}, allow_errors=False).execute()
@@ -59,10 +59,10 @@ def execute(path, folder):
     return notebook
 
 
-def smoke(path, folder):
+def smoke(path, folder, device="cpu"):
     import torch
 
-    execute(path, folder)
+    execute(path, folder, device)
     history = json.loads((folder / "history.json").read_text())
     metrics = json.loads((folder / "metrics.json").read_text())
     checks = json.loads((folder / "model_checks.json").read_text())
@@ -81,32 +81,43 @@ def smoke(path, folder):
     checkpoint = torch.load(folder / "best.pt", map_location="cpu", weights_only=True)
     config = checkpoint["experiment"]["config"]
     assert checkpoint["experiment"]["smoke_test"] and checkpoint["step"] == 2
-    assert config["encoder_layers"] == config["decoder_layers"] == 1
+    assert config["encoder_layers"] == config["decoder_layers"] == (2 if device == "cuda" else 1)
+    assert metrics["runtime"]["device"] == device
+    assert "scaler_state" in checkpoint
+    if device == "cuda":
+        assert torch.cuda.is_available() and metrics["runtime"]["mixed_precision"]
+        assert checks["mixed_precision_forward"] is True
+        assert metrics["peak_cuda_bytes"] > 0
     with zipfile.ZipFile(folder / "next_word_inference.zip") as archive:
         assert archive.testzip() is None
         assert {"inference_model.pt", "sentence_pairs.jsonl", "pair_manifest.json",
                 "tokenizer.json", "experiment.json", "metrics.json"} <= set(archive.namelist())
-    return {"cpu_notebook_execution": "passed", "optimizer_updates": 2,
+    return {("gpu_notebook_execution" if device == "cuda" else "cpu_notebook_execution"): "passed", "optimizer_updates": 2,
             "parameters": metrics["parameters"], "decoder_causality": "passed",
             "encoder_cross_attention": "passed", "checkpoint_reload": "passed",
             "inference_bundle": "passed", "full_training_performed": False,
-            "gpu_validated": False}
+            "gpu_validated": device == "cuda", "runtime": metrics["runtime"],
+            "peak_cuda_bytes": metrics.get("peak_cuda_bytes")}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--notebook", type=Path, default=NOTEBOOK)
     parser.add_argument("--smoke", action="store_true")
+    parser.add_argument("--gpu", action="store_true", help="Run two real CUDA updates using the normal model dimensions")
     parser.add_argument("--output", type=Path, help="Retain smoke artifacts for the concept notebook test")
     args = parser.parse_args()
+    if args.gpu and not args.smoke:
+        parser.error("--gpu requires --smoke")
+    device = "cuda" if args.gpu else "cpu"
     _, report = check(args.notebook)
     if args.smoke:
         if args.output:
             args.output.mkdir(parents=True, exist_ok=True)
-            report.update(smoke(args.notebook, args.output))
+            report.update(smoke(args.notebook, args.output, device))
         else:
             with tempfile.TemporaryDirectory(prefix="sklearnlm-word-smoke-") as temporary:
-                report.update(smoke(args.notebook, Path(temporary)))
+                report.update(smoke(args.notebook, Path(temporary), device))
     print(json.dumps(report, indent=2))
 
 

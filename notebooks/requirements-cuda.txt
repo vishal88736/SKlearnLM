@@ -1,0 +1,5 @@
+# Python 3.12 / Linux x86-64. Official CUDA wheels; all other packages use PyPI.
+torch @ https://download.pytorch.org/whl/cu124/torch-2.6.0%2Bcu124-cp312-cp312-linux_x86_64.whl
+torchaudio @ https://download.pytorch.org/whl/cu124/torchaudio-2.6.0%2Bcu124-cp312-cp312-linux_x86_64.whl
+-r requirements-test.txt
+jupyterlab>=4.3,<5

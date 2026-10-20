@@ -7,6 +7,56 @@ Run notebook 01 first. Notebook 02 reuses its trained model and exact sentence
 pairs for the comparison. Both contain simple, explicit PyTorch attention,
 encoder, decoder and training code, with explanations beside each step.
 
+
+## Train on your NVIDIA GPU
+
+Normal runs of both notebooks now require CUDA; they stop instead of silently
+falling back to CPU. Use the CUDA environment below and run notebook 01 before 02.
+
+The inspected local GPU is an RTX 4050 Laptop with 6 GB VRAM. The small default
+model retains width 128, two encoder layers, two decoder layers and batch size 16.
+The SONAR sentence-encoding batch is reduced to two, and its large frozen encoder
+and decoder are loaded one at a time.
+
+Create a separate Python 3.12 environment on Linux x86-64:
+
+~~~bash
+uv venv --python 3.12 .venv
+uv pip install --python .venv/bin/python -r notebooks/requirements-cuda.txt
+.venv/bin/python -m ipykernel install --prefix .venv --name sklearnlm-cuda --display-name "SKlearnLM CUDA"
+.venv/bin/python -m jupyterlab
+~~~
+
+The CUDA requirements use official PyTorch CUDA 12.4 wheel URLs and PyPI for the
+remaining packages. They do not install or change the NVIDIA system driver.
+Select the **SKlearnLM CUDA** kernel in Jupyter. In Colab, select a GPU runtime.
+
+Each notebook prints the GPU name, CUDA version, VRAM and selected precision.
+Training/evaluation use automatic mixed precision: bfloat16 when supported,
+otherwise float16 with gradient scaling. Gradients are unscaled before clipping,
+and checkpoints include the scaler state. Model weights remain float32.
+Set `SKLEARNLM_PRECISION` to `fp16`, `bf16` or `fp32` before running the
+configuration cells if an explicit precision is needed; the default is `auto`.
+
+Pinned host-to-device batches support asynchronous CUDA copies. Neural training
+and inference use the GPU; BPE training and text preparation remain CPU work.
+
+Two-update CUDA checks run the normal model dimensions:
+
+~~~bash
+.venv/bin/python scripts/check_training_notebook.py --smoke --gpu --output runs/gpu-word-check
+.venv/bin/python scripts/check_concept_notebook.py --smoke --gpu --word-run runs/gpu-word-check
+~~~
+
+The concept check uses explicitly labelled, non-semantic fixtures with the same
+1,024-dimensional vector shape as SONAR. It validates the concept predictor on
+CUDA, not the large pretrained SONAR encoder/decoder. Add `--live-sonar` only in
+the prepared SONAR environment to test the downloaded pretrained assets.
+
+The CPU smoke checks remain available for CI by omitting `--gpu`. A two-update
+check is not full training or convergence evidence. Clear the smoke environment
+variables before starting your normal five-epoch run.
+
 ## Run notebook 01
 
 Use a Python 3.10+ Jupyter kernel. Its first cell installs missing runtime packages,
@@ -17,14 +67,14 @@ python -m pip install -r notebooks/requirements.txt
 ~~~
 
 Run cells in order. Training is enabled: executing the training cell starts the
-configured experiment. CUDA is selected when available; otherwise CPU is used.
-A GPU is recommended for the default five epochs.
+configured experiment. Normal training requires CUDA and uses mixed precision. Use the GPU setup above
+before running the default five epochs.
 
 Defaults: 8,000 BPE vocabulary entries, width 128, four attention heads, two encoder
 layers, two decoder layers, source limit 192, target limit 128 and batch size 16.
 The notebook prints actual vocabulary, accepted pairs, token counts and parameters.
 
-The 49 cells cover teacher forcing, sinusoidal positions, explicit query/key/value
+The 51 cells cover teacher forcing, sinusoidal positions, explicit query/key/value
 attention, masks, encoder self-attention, decoder self-attention, cross-attention,
 feed-forward layers, token-weighted cross-entropy, training, validation,
 checkpoints and autoregressive generation. No pretrained neural model is loaded.

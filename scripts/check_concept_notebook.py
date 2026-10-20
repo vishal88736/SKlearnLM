@@ -56,7 +56,7 @@ class TextToEmbeddingModelPipeline(nn.Module):
     def predict(self, texts, **kwargs):
         # Deterministic non-semantic vectors. This does not implement SONAR.
         return torch.stack([torch.tensor(
-            [byte / 127.5 - 1.0 for byte in hashlib.sha256(text.encode()).digest()[:16]]
+            [byte / 127.5 - 1.0 for byte in hashlib.sha256(text.encode()).digest() * 32]
         ) for text in texts])
 
 class EmbeddingToTextModelPipeline(nn.Module):
@@ -69,13 +69,13 @@ class EmbeddingToTextModelPipeline(nn.Module):
 '''
 
 
-def smoke(path, word_run, fixture):
+def smoke(path, word_run, fixture, device="cpu"):
     import nbformat
     from nbclient import NotebookClient
     import torch
 
     keys = ["SKLEARNLM_SMOKE", "SKLEARNLM_NO_INSTALL", "SKLEARNLM_CONCEPT_FIXTURE",
-            "SKLEARNLM_WORD_RUN_DIR", "SKLEARNLM_CONCEPT_RUN_DIR",
+            "SKLEARNLM_WORD_RUN_DIR", "SKLEARNLM_CONCEPT_RUN_DIR", "SKLEARNLM_SMOKE_DEVICE",
             "MPLBACKEND", "TOKENIZERS_PARALLELISM", "PYTHONPATH"]
     original = {key: os.environ.get(key) for key in keys}
     try:
@@ -85,12 +85,12 @@ def smoke(path, word_run, fixture):
                 from check_training_notebook import smoke as word_smoke, NOTEBOOK as WORD_NOTEBOOK
                 word_run = folder / "next_word"
                 word_run.mkdir()
-                word_smoke(WORD_NOTEBOOK, word_run)
+                word_smoke(WORD_NOTEBOOK, word_run, device)
             concept_run = folder / "next_concept"
             os.environ.update(SKLEARNLM_SMOKE="1", SKLEARNLM_NO_INSTALL="1",
                               SKLEARNLM_CONCEPT_FIXTURE="1" if fixture else "0",
                               SKLEARNLM_WORD_RUN_DIR=str(word_run.resolve()),
-                              SKLEARNLM_CONCEPT_RUN_DIR=str(concept_run),
+                              SKLEARNLM_CONCEPT_RUN_DIR=str(concept_run), SKLEARNLM_SMOKE_DEVICE=device,
                               MPLBACKEND="Agg", TOKENIZERS_PARALLELISM="false")
             if fixture:
                 package_root = folder / "test_fixtures"
@@ -110,6 +110,10 @@ def smoke(path, word_run, fixture):
             assert metrics["fixture_test"] is fixture and metrics["live_sonar_used"] is not fixture
             assert metrics["smoke_test"] and metrics["optimizer_updates"] == 2
             assert not metrics["full_training_performed"]
+            assert metrics["runtime"]["device"] == device
+            if device == "cuda":
+                assert torch.cuda.is_available() and metrics["runtime"]["mixed_precision"]
+                assert metrics["peak_cuda_bytes"] > 0
             assert all(json.loads((concept_run / "model_checks.json").read_text()).values())
             for split in ("validation", "test"):
                 assert math.isfinite(metrics[split]["standardized_mse"])
@@ -126,11 +130,13 @@ def smoke(path, word_run, fixture):
             assert model["experiment"]["fixture_test"] is fixture
             with zipfile.ZipFile(concept_run / "next_concept_inference.zip") as archive:
                 assert archive.testzip() is None and "comparison.json" in archive.namelist()
-            return {"cpu_notebook_execution": "passed", "optimizer_updates": 2,
+            return {("gpu_notebook_execution" if device == "cuda" else "cpu_notebook_execution"): "passed", "optimizer_updates": 2,
                     "embedding_backend": "test_fixture_not_sonar" if fixture else "pretrained_sonar",
                     "matching_pair_fingerprints": "passed", "checkpoint_reload": "passed",
                     "comparison_export": "passed", "live_sonar_weights_validated": not fixture,
-                    "full_training_performed": False, "gpu_validated": False}
+                    "full_training_performed": False,
+                    "gpu_concept_predictor_validated": device == "cuda",
+                    "runtime": metrics["runtime"], "peak_cuda_bytes": metrics["peak_cuda_bytes"]}
     finally:
         for key, value in original.items():
             if value is None:
@@ -143,13 +149,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--notebook", type=Path, default=NOTEBOOK)
     parser.add_argument("--smoke", action="store_true")
+    parser.add_argument("--gpu", action="store_true", help="Execute the concept predictor on CUDA; SONAR fixtures remain labelled")
     parser.add_argument("--live-sonar", action="store_true",
                         help="Use real SONAR assets: requires a prepared environment and about 7.6GB downloads")
     parser.add_argument("--word-run", type=Path, help="Existing two-update word smoke artifacts")
     args = parser.parse_args()
+    if args.gpu and not args.smoke:
+        parser.error("--gpu requires --smoke")
+    device = "cuda" if args.gpu else "cpu"
     report = check(args.notebook)
     if args.smoke:
-        report.update(smoke(args.notebook, args.word_run, not args.live_sonar))
+        report.update(smoke(args.notebook, args.word_run, not args.live_sonar, device))
     print(json.dumps(report, indent=2))
 
 
