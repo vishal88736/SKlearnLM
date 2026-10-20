@@ -27,8 +27,8 @@ uv pip install --python .venv/bin/python -r notebooks/requirements-cuda.txt
 .venv/bin/python -m jupyterlab
 ~~~
 
-The CUDA requirements use official PyTorch CUDA 12.4 wheel URLs and PyPI for the
-remaining packages. They do not install or change the NVIDIA system driver.
+The CUDA requirements pin official PyTorch Linux CUDA 12.4 builds from PyPI,
+with the published wheel hashes. They do not install or change the NVIDIA system driver.
 Select the **SKlearnLM CUDA** kernel in Jupyter. In Colab, select a GPU runtime.
 
 Each notebook prints the GPU name, CUDA version, VRAM and selected precision.

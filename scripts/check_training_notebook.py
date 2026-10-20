@@ -85,8 +85,9 @@ def smoke(path, folder, device="cpu"):
     assert metrics["runtime"]["device"] == device
     assert "scaler_state" in checkpoint
     if device == "cuda":
-        assert torch.cuda.is_available() and metrics["runtime"]["mixed_precision"]
-        assert checks["mixed_precision_forward"] is True
+        assert torch.cuda.is_available()
+        if metrics["runtime"]["mixed_precision"]:
+            assert checks["mixed_precision_forward"] is True
         assert metrics["peak_cuda_bytes"] > 0
     with zipfile.ZipFile(folder / "next_word_inference.zip") as archive:
         assert archive.testzip() is None

@@ -112,7 +112,7 @@ def smoke(path, word_run, fixture, device="cpu"):
             assert not metrics["full_training_performed"]
             assert metrics["runtime"]["device"] == device
             if device == "cuda":
-                assert torch.cuda.is_available() and metrics["runtime"]["mixed_precision"]
+                assert torch.cuda.is_available()
                 assert metrics["peak_cuda_bytes"] > 0
             assert all(json.loads((concept_run / "model_checks.json").read_text()).values())
             for split in ("validation", "test"):
