@@ -15,7 +15,8 @@
     519,
     572
   ],
-  "adaptation": "New code and explanations for train-only byte-level BPE and a small randomly initialized causal transformer trained on the SKlearnLM corpus.",
+  "adaptation": "New step-by-step code for training-only BPE and a small encoder-decoder Transformer, revised from the original GPT adaptation at the user's request. The supplied reference informs the learning sequence, not the encoder-decoder architecture.",
   "reference_redistributed": false,
-  "reference_related_project": "https://github.com/rasbt/LLMs-from-scratch"
+  "reference_related_project": "https://github.com/rasbt/LLMs-from-scratch",
+  "architecture_reference": "https://arxiv.org/abs/1706.03762"
 }

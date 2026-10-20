@@ -1,98 +1,90 @@
-# Training notebook
+# Encoder–decoder training notebooks
 
-Open [SKlearnLM_Transformer.ipynb](SKlearnLM_Transformer.ipynb) in Jupyter, or
+Start with [01 — Next-word prediction](SKlearnLM_Transformer.ipynb), or
 [open it in Colab](https://colab.research.google.com/github/vishal88736/SKlearnLM/blob/main/notebooks/SKlearnLM_Transformer.ipynb).
 
-The notebook was written after inspecting the 889-cell
-[user-supplied reference](https://drive.google.com/file/d/1qyydJT5PC0eK4B0pXlbJ3N1f3gPKA6i6/view).
-[reference_provenance.json](reference_provenance.json) records its SHA-256 and
-the core cell numbers inspected. The reference itself stays local and is not
-redistributed.
+The first notebook implements the requested encoder–decoder Transformer with simple,
+explicit PyTorch operations. Its 49 cells walk through BPE, teacher forcing,
+sinusoidal positions, query/key/value projections, masks, encoder self-attention,
+decoder self-attention, cross-attention, feed-forward layers, loss, training,
+validation, checkpoints and autoregressive generation.
 
-## What it implements
+## Run notebook 01
 
-1. Verify the existing training, validation and test text against the dataset manifest.
-2. Fit byte-level BPE on training documents only, preserving code whitespace and Unicode.
-3. Form non-overlapping next-token windows separately within each split.
-4. Build a randomly initialized GPT with learned positional embeddings, causal
-   multi-head attention, pre-normalized residual blocks, GELU and tied vocabulary weights.
-5. Check shifted targets, future-token masking and finite gradients.
-6. Train with AdamW, gradient accumulation, warmup/cosine scheduling, clipping,
-   validation probes and early stopping.
-7. Save best/latest checkpoints and restore the selected model with tokenizer/data checks.
-8. Measure final validation loss and optional held-out test loss.
-9. Generate documentation continuations and export weights plus the frozen tokenizer.
-
-The default configuration targets 8,000 BPE tokens, four layers, embedding width
-256, four heads and a 256-token context. The notebook prints its actual vocabulary,
-token counts and model parameter count. It starts from random neural weights;
-it does not load a pretrained tokenizer/model or other training text.
-
-## Run it
-
-Use Python 3.10+ with a Jupyter kernel. The first code cell installs missing
-runtime dependencies. Alternatively:
+Use a Python 3.10+ Jupyter kernel. The first code cell installs missing packages,
+or install them first:
 
 ~~~bash
 python -m pip install -r notebooks/requirements.txt
 ~~~
 
-Run cells in order. In the configuration cell, change `RUN_TRAINING` to `True`
-when ready to start training. It is disabled by default because creating or
-opening the notebook should not start a full training job. CUDA is selected
-when available, otherwise CPU. Supported CUDA devices use bfloat16; other
-devices use float32.
+Run cells in order. Training is enabled in the configuration: running the training
+cell starts the configured experiment. CUDA is selected when available; otherwise
+the model uses CPU. A GPU is recommended for the default five epochs.
 
-When the notebook is run alone in Colab, it downloads the text splits from the
-pinned dataset commit `bb503b2b994518c4640e4d966392b03cb35b6cbe`. Local repository
-data is used when present. File lengths and SHA-256 values must match the
-manifest.
+Defaults: 8,000 BPE vocabulary entries, width 128, four attention heads, two encoder
+layers, two decoder layers, source limit 192, target limit 128 and batch size 16.
+Actual vocabulary, accepted pairs, token counts and parameters are printed.
 
-The test evaluation flag is separate. Enable it after validation-based model
-selection. Report perplexity as next-token prediction quality under the chosen
-tokenizer, not factual accuracy or instruction-following ability.
+`DATA_MODE = "sentences"` prepares the same context/next-sentence pairs needed for
+the next-concept comparison. It trains next-token prediction inside each target
+sentence. It excludes code, headings, tables and unsuitable prose; the complete
+documentation remains intact in `data/`. The tokenizer is trained only on
+`train.txt`, including its code, and stays frozen.
 
-## Artifacts and repeated sessions
+`DATA_MODE = "all_text"` instead trains document-local full-text continuation
+windows, including code. That is a distinct experiment and should not be presented
+as a controlled comparison against a sentence-only concept model.
 
-Artifacts go to `runs/sklearnlm/` by default, outside tracked source files.
-The exact directory is printed by the notebook.
+Final test evaluation is off by default. Enable it after fixing the experiment
+with validation data. Normal final validation covers the full split.
 
-- `tokenizer.json` and `tokenizer_metadata.json` preserve the training-only BPE.
-- `best.pt` and `last.pt` contain model, optimizer, configuration and fingerprints.
-- `history.json` and `loss_curve.png` record measured training/validation probes.
-- `metrics.json` records final evaluations that were actually run.
-- `sklearnlm_inference.zip` contains weights, tokenizer, configuration and metadata.
+## Data and artifacts
 
-A matching frozen tokenizer is reused. If its settings/data differ, the notebook
-asks for a new run directory rather than silently invalidating a checkpoint.
-To start a separate experiment, set `SKLEARNLM_RUN_DIR` before the data cell.
-`SKLEARNLM_DATA_DIR` can select another explicitly prepared corpus directory.
+The notebook verifies the pinned dataset manifest and all file hashes. It uses
+local repository files when available or downloads the matching snapshot from
+commit `bb503b2b994518c4640e4d966392b03cb35b6cbe`.
 
-Checkpoint loading is an inference/reload path; exact interrupted-run resumption
-is not implemented. Optimizer state is retained for further development.
+Artifacts go to `runs/next_word/`. Use `SKLEARNLM_RUN_DIR` to select a fresh
+experiment folder, and `SKLEARNLM_DATA_DIR` to select the existing corpus.
 
-## Validation
+- `sentence_pairs.jsonl` and `pair_manifest.json`: exact accepted context/target
+  pairs, split memberships and length-filter counts for the comparison.
+- `tokenizer.json` and `tokenizer_metadata.json`: the training-only BPE.
+- `experiment.json`: model configuration and data/tokenizer fingerprints.
+- `best.pt`, `last.pt`, `history.json`, `metrics.json`: weights and actual measurements.
+- `positions.png`, `causal_attention.png`, `loss_curve.png`: explanatory/measured plots.
+- `next_word_inference.zip`: inference weights, tokenizer, pairs and metadata.
 
-Structural checks need only Python's standard library:
+Keep the same pair/tokenizer configuration across initialization-seed trials.
+Changing settings requires a fresh output directory. Checkpoint reload is
+implemented; exact interrupted-run resumption is not.
+
+## Checks and their limits
 
 ~~~bash
 python scripts/check_training_notebook.py
-~~~
-
-The optional runtime test uses a real Jupyter kernel, a tiny CPU model and two
-optimizer updates on real training windows. It checks BPE round trips, causal
-masking, gradients, checkpoints, generation and the inference ZIP:
-
-~~~bash
 python -m pip install -r notebooks/requirements-test.txt
 python scripts/check_training_notebook.py --smoke
 ~~~
 
-For a CPU-only machine, install the matching PyTorch CPU wheel first using
-[PyTorch's installation selector](https://pytorch.org/get-started/locally/), then
-install the remaining test requirements.
+The runtime check executes all cells in a real Jupyter CPU kernel with a tiny
+model and two optimizer updates on actual training pairs. It checks manual
+attention against PyTorch, decoder causality, source-padding invariance,
+cross-attention dependence on context, finite gradients, checkpoint reload,
+generation and the export ZIP.
 
-Smoke mode uses temporary artifacts and does not modify the corpus or train a
-full model. Its loss values are not convergence or model-quality results.
-The notebook is committed with empty outputs; full training and GPU performance
-must be measured separately.
+This is a functional smoke test, not full training, convergence evidence or GPU
+validation. Published notebooks have empty outputs and contain no invented scores.
+
+## Sources
+
+The supplied [reference notebook](https://drive.google.com/file/d/1qyydJT5PC0eK4B0pXlbJ3N1f3gPKA6i6/view)
+was inspected before writing the original training notebook. Its provenance is in
+[reference_provenance.json](reference_provenance.json); it is not redistributed.
+
+The requested architecture follows [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+at a small scale. The planned next-concept experiment uses the
+[LCM research](https://arxiv.org/abs/2412.08821) and pretrained
+[SONAR](https://github.com/facebookresearch/SONAR), as requested. It will have
+outside pretrained knowledge and different losses, which the comparison must disclose.

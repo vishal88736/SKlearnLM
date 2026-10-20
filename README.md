@@ -10,7 +10,7 @@ examples and LaTeX equations from the English `1.10.dev0` documentation.
 
 Open [the Jupyter notebook](notebooks/SKlearnLM_Transformer.ipynb) or [run it in Colab](https://colab.research.google.com/github/vishal88736/SKlearnLM/blob/main/notebooks/SKlearnLM_Transformer.ipynb).
 
-The 30-cell notebook adapts the supplied reference's from-scratch GPT path to this corpus: train-only BPE, a small causal transformer, validation, checkpoints, generation and export. Full training is disabled until explicitly enabled in its configuration cell. See [notebooks/README.md](notebooks/README.md) for usage and the CPU smoke-test scope.
+The notebook now builds a complete **encoder–decoder Transformer** with simple, explicit PyTorch code: token embeddings, sinusoidal positions, attention masks, encoder blocks, decoder blocks and cross-attention. It includes next-token training, validation, checkpoints and generation. Training runs when its training cell is executed. The sentence-pair mode prepares a matched next-concept comparison; full-text continuation is also available. See [notebooks/README.md](notebooks/README.md) for usage and validation scope.
 
 ## Training files
 
